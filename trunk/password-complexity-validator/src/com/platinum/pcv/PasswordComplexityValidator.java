@@ -10,7 +10,9 @@ import java.util.logging.Logger;
 /**
  * PasswordComplexityValidator validates the password meets your requirements
  * as far as complexity is concerned.
- * 
+ *
+ * License: Apache 2.0
+ *
  * @author jlucier
  */
 public class PasswordComplexityValidator {
