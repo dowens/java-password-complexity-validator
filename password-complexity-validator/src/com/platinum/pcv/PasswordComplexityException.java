@@ -1,6 +1,9 @@
 package com.platinum.pcv;
 
 /**
+ * This is the exception returned if a password fails validation
+ *
+ * License: Apache 2.0
  *
  * @author jlucier
  */
