@@ -28,6 +28,8 @@ public class PasswordComplexityTest {
     private static final String PREV_FOUR_CHAR_PW = "ttttYYYY3333!&&&";
     private static final String FOUR_CHAR_FAIL_PW = "ttTTyYYY3333!&&&"; // 3 char diff
     private static final String FOUR_CHAR_SUCCESS_PW = "ttTTyyYY3333!&&&"; // 4 char diff
+    private static final String PHONE_NUMBER_FAILURE_PW = "AAAAbbbb1111@@@@111-222-3333";
+    private static final String DATE_FAILURE_PW = "AAAAbbbb1111@@@@12/27/2010";
     private ArrayList<String> samplePreviousPasswords;
 
     public PasswordComplexityTest() {
@@ -65,6 +67,7 @@ public class PasswordComplexityTest {
     public void nullPasswordTest() {
         try {
             PasswordComplexityValidator.validatePassword(null, samplePreviousPasswords);
+            assertTrue(false);
         } catch (PasswordComplexityException ex) {
             assertTrue(ex.getMessage().toLowerCase().contains("cannot have a null password"));
             Logger.getLogger(PasswordComplexityTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -75,6 +78,7 @@ public class PasswordComplexityTest {
     public void minLengthFailTest() {
         try {
             PasswordComplexityValidator.validatePassword(MIN_LENGTH_FAIL_PW, samplePreviousPasswords);
+            assertTrue(false);
         } catch (PasswordComplexityException ex) {
             assertTrue(ex.getMessage().toLowerCase().contains("password must be at least"));
             Logger.getLogger(PasswordComplexityTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -85,6 +89,7 @@ public class PasswordComplexityTest {
     public void charUpperFailTest() {
         try {
             PasswordComplexityValidator.validatePassword(CHAR_UPPER_FAIL_PW, samplePreviousPasswords);
+            assertTrue(false);
         } catch (PasswordComplexityException ex) {
             assertTrue(ex.getMessage().toLowerCase().contains("uppercase alpha"));
             Logger.getLogger(PasswordComplexityTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -95,6 +100,7 @@ public class PasswordComplexityTest {
     public void charLowerFailTest() {
         try {
             PasswordComplexityValidator.validatePassword(CHAR_LOWER_FAIL_PW, samplePreviousPasswords);
+            assertTrue(false);
         } catch (PasswordComplexityException ex) {
             assertTrue(ex.getMessage().toLowerCase().contains("lowercase alpha"));
             Logger.getLogger(PasswordComplexityTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -105,6 +111,7 @@ public class PasswordComplexityTest {
     public void charNumericFailTest() {
         try {
             PasswordComplexityValidator.validatePassword(CHAR_NUMERIC_FAIL_PW, samplePreviousPasswords);
+            assertTrue(false);
         } catch (PasswordComplexityException ex) {
             assertTrue(ex.getMessage().toLowerCase().contains("numerical"));
             Logger.getLogger(PasswordComplexityTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -115,6 +122,7 @@ public class PasswordComplexityTest {
     public void charSymbolFailTest() {
         try {
             PasswordComplexityValidator.validatePassword(CHAR_SYMBOL_FAIL_PW, samplePreviousPasswords);
+            assertTrue(false);
         } catch (PasswordComplexityException ex) {
             assertTrue(ex.getMessage().toLowerCase().contains("special"));
             Logger.getLogger(PasswordComplexityTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -125,6 +133,7 @@ public class PasswordComplexityTest {
     public void oldPasswordFailTest() {
         try {
             PasswordComplexityValidator.validatePassword(OLD_PW, samplePreviousPasswords);
+            assertTrue(false);
         } catch (PasswordComplexityException ex) {
             assertTrue(ex.getMessage().toLowerCase().contains("may not use a password which has been used within"));
             Logger.getLogger(PasswordComplexityTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -135,6 +144,7 @@ public class PasswordComplexityTest {
     public void lastFourCharsFailTest() {
         try {
             PasswordComplexityValidator.validatePassword(FOUR_CHAR_FAIL_PW, samplePreviousPasswords);
+            assertTrue(false);
         } catch (PasswordComplexityException ex) {
             assertTrue(ex.getMessage().toLowerCase().contains("password must differ by at least"));
             Logger.getLogger(PasswordComplexityTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -161,6 +171,29 @@ public class PasswordComplexityTest {
             assertTrue(true);
         } catch (PasswordComplexityException ex) {
             assertTrue(false);
+        }
+    }
+
+    @Test
+    public void dateTest() {
+
+        try {
+            PasswordComplexityValidator.validatePassword(DATE_FAILURE_PW, null);
+            assertTrue(false);
+        } catch (PasswordComplexityException ex) {
+            assertTrue(ex.getMessage().toLowerCase().contains("date"));
+        }
+    }
+
+
+    @Test
+    public void phoneNumberTest() {
+
+        try {
+            PasswordComplexityValidator.validatePassword(PHONE_NUMBER_FAILURE_PW, null);
+            assertTrue(false);
+        } catch (PasswordComplexityException ex) {
+            assertTrue(ex.getMessage().toLowerCase().contains("phone"));
         }
     }
 

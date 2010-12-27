@@ -6,6 +6,8 @@ import com.platinum.dpv.DictionaryPasswordValidator;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * PasswordComplexityValidator validates the password meets your requirements
@@ -17,7 +19,6 @@ import java.util.logging.Logger;
  */
 public class PasswordComplexityValidator {
 
-
     // For character determinations
     private static final int CHAR_LOWER_A = 'a';
     private static final int CHAR_LOWER_Z = 'z';
@@ -27,7 +28,13 @@ public class PasswordComplexityValidator {
     private static final int CHAR_NUMERIC_NINE = '9';
     private static final int CHAR_LOWER_SPECIAL_CHAR = ' ';
     private static final int CHAR_UPPER_SPECIAL_CHAR = '~';
-
+    private static final String DATE_NUMERICAL_REGEX = ".*([0-9]{1,4}[\\-.\\/]{1}"
+            + "[0-9]{1,2}[\\-.\\/]{1}[0-9]{1,4}).*";
+    private static final Pattern DATE_NUMERICAL_PATTERN = Pattern.compile(DATE_NUMERICAL_REGEX, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+    private static final String PHONE_NUMBER_REGEX = ".*([0-9]{3}[\\-.]{1}"
+            + "[0-9]{3}[\\-.]{1}[0-9]{4}).*";
+    private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile(PHONE_NUMBER_REGEX, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+    
     // Configurable variables
     private static int minPasswordLength = 15;
     private static int maxPasswordLength = 50;
@@ -38,8 +45,8 @@ public class PasswordComplexityValidator {
     private static int lastPasswordDifferInChars = 4;
     private static int passwordHistoryLen = 10;
     private static boolean restrictedByDictionary = true;
-
-    
+    private static boolean allowPhoneNumbers = false;
+    private static boolean allowDates = false;
 
     /**
      * Override the default settings. This should be called on start up of the
@@ -57,7 +64,7 @@ public class PasswordComplexityValidator {
     public static synchronized void configure(int newMinPasswordLength, int newMaxPasswordLength,
             int newMinLowerAlphaChars, int newMinUpperAlphaChars, int newMinSpecialChars,
             int newMinNumericalChars, int newLastPasswordDifferInChars, int newPasswordHistoryLen,
-            boolean newRestrictedByDictionary, float newDictionaryAccuracy,
+            boolean newAllowPhoneNumbers, boolean newAllowDates, boolean newRestrictedByDictionary, float newDictionaryAccuracy,
             int newDictionaryMinWordLength) {
 
         minPasswordLength = newMinPasswordLength;
@@ -68,6 +75,8 @@ public class PasswordComplexityValidator {
         minNumericalChars = newMinNumericalChars;
         lastPasswordDifferInChars = newLastPasswordDifferInChars;
         passwordHistoryLen = newPasswordHistoryLen;
+        allowPhoneNumbers = newAllowPhoneNumbers;
+        allowDates = newAllowDates;
         restrictedByDictionary = newRestrictedByDictionary;
 
         try {
@@ -95,6 +104,11 @@ public class PasswordComplexityValidator {
         // Validate the password meets our character and length restrictions
         characterAndLengthValidations(newPassword);
 
+        // Date validation
+        dateValidation(newPassword);
+
+        // Phone number validation
+        phoneNumberValidation(newPassword);
 
         // Check the password doesn't contain dictionary words
         if (restrictedByDictionary == true) {
@@ -117,6 +131,30 @@ public class PasswordComplexityValidator {
 
 
         // Success, we've survived the battery of tests.
+    }
+
+    private static void dateValidation(String newPassword) throws PasswordComplexityException {
+
+        if (allowDates == false) {
+            Matcher m = DATE_NUMERICAL_PATTERN.matcher(newPassword);
+            if (m.matches() == true) {
+                throw new PasswordComplexityException("Your password cannot contain dates.");
+
+            }
+        }
+
+    }
+
+    private static void phoneNumberValidation(String newPassword) throws PasswordComplexityException {
+
+        if (allowPhoneNumbers == false) {
+            Matcher m = PHONE_NUMBER_PATTERN.matcher(newPassword);
+            if (m.matches() == true) {
+                throw new PasswordComplexityException("Your password cannot contain phone numbers.");
+
+            }
+        }
+
     }
 
     /**
