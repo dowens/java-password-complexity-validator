@@ -6,7 +6,7 @@
 Firstly, configure the parameters.  This should be done on your applications start up, since you can't reinitialize the dictionary.
 
 {{{
-PasswordComplexityValidator.configure(this.passwordMinLength, this.passwordMaxLength, this.passwordMinLowerAlphaChars,  this.passwordMinUpperAlphaChars, this.passwordMinSpecialChars, this.passwordMinNumericalChars,  this.passwordLastPasswordDifferInCharsAmount, this.passwordHistoryLen, this.passwordAllowPhoneNumbers,  this.passwordAllowDates, this.passwordRestrictedByDictionary, this.passwordDictionaryAccuracy,  this.passwordDictionaryMinWordLength);
+PasswordComplexityValidator.configure(...);
 }}}
 
 
@@ -21,4 +21,3 @@ Then to validate, you just need to pass in the password to validate against, as 
 	    System.out.println(ex.getMessage());
 	}
 }}}
-
