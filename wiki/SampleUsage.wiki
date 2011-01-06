@@ -1,0 +1,24 @@
+#summary Example usage
+#labels Phase-Support
+
+= Usage =
+
+Firstly, configure the parameters.  This should be done on your applications start up, since you can't reinitialize the dictionary.
+
+{{{
+PasswordComplexityValidator.configure(this.passwordMinLength, this.passwordMaxLength, this.passwordMinLowerAlphaChars,  this.passwordMinUpperAlphaChars, this.passwordMinSpecialChars, this.passwordMinNumericalChars,  this.passwordLastPasswordDifferInCharsAmount, this.passwordHistoryLen, this.passwordAllowPhoneNumbers,  this.passwordAllowDates, this.passwordRestrictedByDictionary, this.passwordDictionaryAccuracy,  this.passwordDictionaryMinWordLength);
+}}}
+
+
+Then to validate, you just need to pass in the password to validate against, as well as the list of previous passwords (in order of newest to oldest).  You can also pass in null if you have none, or an empty list.
+
+{{{
+        try {
+	    ArrayList<PasswordHist> passHistList = [List of old passwords in newest to oldest order];
+	    PasswordComplexityValidator.validatePassword(newPassword, passHistList );
+	} catch (PasswordComplexityException ex) {
+            // This will output the issue with the password to the console
+	    System.out.println(ex.getMessage());
+	}
+}}}
+
