@@ -236,7 +236,6 @@ public class PasswordComplexityValidator {
 
         // Count the characters
         char passwordChar;
-        Matcher specialCharMatcher;
         for (int i = 0; i < passwordLen; i++) {
             passwordChar = password.charAt(i);
             if (passwordChar >= CHAR_LOWER_A && passwordChar <= CHAR_LOWER_Z) {
