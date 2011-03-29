@@ -59,19 +59,26 @@ public class PasswordComplexityValidator {
     private static boolean allowPhoneNumbers = false;
     private static boolean allowDates = false;
 
-    /**
+   /**
+    *
      * Override the default settings. This should be called on start up of the
      * app using the util.  This goes against normal conventions, but just go with it.
-     * 
-     * @param minPasswordLen
-     * @param maxPasswordLen
-     * @param minLowerAlphaChars
-     * @param minUpperAlphaChars
-     * @param minSpecialChars
-     * @param minNumericalChars
-     * @param lastPasswordDifferInChars
-     * @param restricedByDictionary
-     */
+    * 
+    * @param newMinPasswordLength
+    * @param newMaxPasswordLength
+    * @param newMinLowerAlphaChars
+    * @param newMinUpperAlphaChars
+    * @param newMinSpecialChars
+    * @param newMinNumericalChars
+    * @param newAllowExtendedAsciiSymbols
+    * @param newLastPasswordDifferInChars
+    * @param newPasswordHistoryLen
+    * @param newAllowPhoneNumbers
+    * @param newAllowDates
+    * @param newRestrictedByDictionary
+    * @param newDictionaryAccuracy
+    * @param newDictionaryMinWordLength
+    */
     public static synchronized void configure(int newMinPasswordLength, int newMaxPasswordLength,
             int newMinLowerAlphaChars, int newMinUpperAlphaChars, int newMinSpecialChars,
             int newMinNumericalChars, boolean newAllowExtendedAsciiSymbols,
