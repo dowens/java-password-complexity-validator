@@ -6,12 +6,12 @@
 Firstly, configure the parameters.  This should be done on your applications start up, since you can't reinitialize the dictionary.
 
 {{{
-int minPasswordLength;			// Minimum length of a password
-int maxPasswordLength;			// Maximum length of a password
-int minLowerAlphaChars;			// Minimum amount of lowercase alpha characters in the password
-int minUpperAlphaChars;			// Minimum amount of uppercase alpha characters in the password
-int minSpecialChars;				// Minimum amount of special characters in the password
-int minNumericalChars;				// Minimum amount of numerical characters in the password
+int minPasswordLength = 4;			// Minimum length of a password
+int maxPasswordLength = 25;		// Maximum length of a password
+int minLowerAlphaChars = 1;			// Minimum amount of lowercase alpha characters in the password
+int minUpperAlphaChars = 1;			// Minimum amount of uppercase alpha characters in the password
+int minSpecialChars = 1;			// Minimum amount of special characters in the password
+int minNumericalChars = 1;			// Minimum amount of numerical characters in the password
 int lastPasswordDifferInChars = 4;		// The password must differ by X amount of characters compared to the last one
 int passwordHistoryLen = 4;  		// Validate we haven't used this password in this many iterations (we use the list of old pw's you pass in for this)
 boolean allowPhoneNumbers = false;  	// Allow phone numbers in the password?
