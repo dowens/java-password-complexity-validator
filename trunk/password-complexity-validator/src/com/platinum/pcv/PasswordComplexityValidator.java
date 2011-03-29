@@ -52,7 +52,7 @@ public class PasswordComplexityValidator {
     private static int minUpperAlphaChars = 1;
     private static int minSpecialChars = 1;
     private static int minNumericalChars = 1;
-    private static boolean allowExtendedNonAsciiSymbols = false;
+    private static boolean allowExtendedAsciiSymbols = false;
     private static int lastPasswordDifferInChars = 4;
     private static int passwordHistoryLen = 10;
     private static boolean restrictedByDictionary = true;
@@ -74,7 +74,7 @@ public class PasswordComplexityValidator {
      */
     public static synchronized void configure(int newMinPasswordLength, int newMaxPasswordLength,
             int newMinLowerAlphaChars, int newMinUpperAlphaChars, int newMinSpecialChars,
-            int newMinNumericalChars, boolean newAllowExtendedNonAsciiSymbols,
+            int newMinNumericalChars, boolean newAllowExtendedAsciiSymbols,
             int newLastPasswordDifferInChars, int newPasswordHistoryLen,
             boolean newAllowPhoneNumbers, boolean newAllowDates, boolean newRestrictedByDictionary, float newDictionaryAccuracy,
             int newDictionaryMinWordLength) {
@@ -85,7 +85,7 @@ public class PasswordComplexityValidator {
         minUpperAlphaChars = newMinUpperAlphaChars;
         minSpecialChars = newMinSpecialChars;
         minNumericalChars = newMinNumericalChars;
-        allowExtendedNonAsciiSymbols = newAllowExtendedNonAsciiSymbols;
+        allowExtendedAsciiSymbols = newAllowExtendedAsciiSymbols;
         lastPasswordDifferInChars = newLastPasswordDifferInChars;
         passwordHistoryLen = newPasswordHistoryLen;
         allowPhoneNumbers = newAllowPhoneNumbers;
@@ -245,10 +245,10 @@ public class PasswordComplexityValidator {
                 alphaUpperCharsCount++;
             } else if (passwordChar >= CHAR_NUMERIC_ZERO && passwordChar <= CHAR_NUMERIC_NINE) {
                 numericCharsCount++;
-            } else if (allowExtendedNonAsciiSymbols == false &&
+            } else if (allowExtendedAsciiSymbols == false &&
                     passwordChar >= CHAR_LOWER_SPECIAL_CHAR && passwordChar <= CHAR_UPPER_SPECIAL_CHAR) {
                 specialCharsCount++;
-            } else if (allowExtendedNonAsciiSymbols == true &&
+            } else if (allowExtendedAsciiSymbols == true &&
                     passwordChar >= CHAR_LOWER_SPECIAL_CHAR && passwordChar <= CHAR_EXTENDED_UPPER_SPECIAL_CHAR) {
                 specialCharsCount++;
             }  else {
