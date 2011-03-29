@@ -26,22 +26,33 @@ public class PasswordComplexityValidator {
     private static final int CHAR_UPPER_Z = 'Z';
     private static final int CHAR_NUMERIC_ZERO = '0';
     private static final int CHAR_NUMERIC_NINE = '9';
+
+    // Since the alpha and numeric checks handle the [a-zA-Z0-9] case in
+    // earlier if statement checks, we can then assume the surrounding characters
+    // within the range of the special char lower and upper values are in fact
+    // special characters.  If it extends past the range, then it's no longer a symbol.
     private static final int CHAR_LOWER_SPECIAL_CHAR = ' ';
     private static final int CHAR_UPPER_SPECIAL_CHAR = '~';
-    private static final String DATE_NUMERICAL_REGEX = ".*([0-9]{1,4}[\\-.\\/]{1}"
+    private static final int CHAR_EXTENDED_UPPER_SPECIAL_CHAR = 255;
+
+    // Date regex and pattern
+    private static final String REGEX_DATE_NUMERICAL = ".*([0-9]{1,4}[\\-.\\/]{1}"
             + "[0-9]{1,2}[\\-.\\/]{1}[0-9]{1,4}).*";
-    private static final Pattern DATE_NUMERICAL_PATTERN = Pattern.compile(DATE_NUMERICAL_REGEX, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-    private static final String PHONE_NUMBER_REGEX = ".*([0-9]{3}[\\-.]{1}"
+    private static final Pattern PATTERN_DATE_NUMERICAL = Pattern.compile(REGEX_DATE_NUMERICAL, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+
+    // Phone regex and pattern
+    private static final String REGEX_PHONE_NUMBER = ".*([0-9]{3}[\\-.]{1}"
             + "[0-9]{3}[\\-.]{1}[0-9]{4}).*";
-    private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile(PHONE_NUMBER_REGEX, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+    private static final Pattern PATTERN_PHONE_NUMBER = Pattern.compile(REGEX_PHONE_NUMBER, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
     
     // Configurable variables
     private static int minPasswordLength = 15;
     private static int maxPasswordLength = 50;
-    private static int minLowerAlphaChars = 2;
-    private static int minUpperAlphaChars = 2;
-    private static int minSpecialChars = 2;
-    private static int minNumericalChars = 2;
+    private static int minLowerAlphaChars = 1;
+    private static int minUpperAlphaChars = 1;
+    private static int minSpecialChars = 1;
+    private static int minNumericalChars = 1;
+    private static boolean allowExtendedNonAsciiSymbols = false;
     private static int lastPasswordDifferInChars = 4;
     private static int passwordHistoryLen = 10;
     private static boolean restrictedByDictionary = true;
@@ -63,7 +74,8 @@ public class PasswordComplexityValidator {
      */
     public static synchronized void configure(int newMinPasswordLength, int newMaxPasswordLength,
             int newMinLowerAlphaChars, int newMinUpperAlphaChars, int newMinSpecialChars,
-            int newMinNumericalChars, int newLastPasswordDifferInChars, int newPasswordHistoryLen,
+            int newMinNumericalChars, boolean newAllowExtendedNonAsciiSymbols,
+            int newLastPasswordDifferInChars, int newPasswordHistoryLen,
             boolean newAllowPhoneNumbers, boolean newAllowDates, boolean newRestrictedByDictionary, float newDictionaryAccuracy,
             int newDictionaryMinWordLength) {
 
@@ -73,6 +85,7 @@ public class PasswordComplexityValidator {
         minUpperAlphaChars = newMinUpperAlphaChars;
         minSpecialChars = newMinSpecialChars;
         minNumericalChars = newMinNumericalChars;
+        allowExtendedNonAsciiSymbols = newAllowExtendedNonAsciiSymbols;
         lastPasswordDifferInChars = newLastPasswordDifferInChars;
         passwordHistoryLen = newPasswordHistoryLen;
         allowPhoneNumbers = newAllowPhoneNumbers;
@@ -136,10 +149,9 @@ public class PasswordComplexityValidator {
     private static void dateValidation(String newPassword) throws PasswordComplexityException {
 
         if (allowDates == false) {
-            Matcher m = DATE_NUMERICAL_PATTERN.matcher(newPassword);
+            Matcher m = PATTERN_DATE_NUMERICAL.matcher(newPassword);
             if (m.matches() == true) {
                 throw new PasswordComplexityException("Your password cannot contain dates.");
-
             }
         }
 
@@ -148,7 +160,7 @@ public class PasswordComplexityValidator {
     private static void phoneNumberValidation(String newPassword) throws PasswordComplexityException {
 
         if (allowPhoneNumbers == false) {
-            Matcher m = PHONE_NUMBER_PATTERN.matcher(newPassword);
+            Matcher m = PATTERN_PHONE_NUMBER.matcher(newPassword);
             if (m.matches() == true) {
                 throw new PasswordComplexityException("Your password cannot contain phone numbers.");
 
@@ -224,6 +236,7 @@ public class PasswordComplexityValidator {
 
         // Count the characters
         char passwordChar;
+        Matcher specialCharMatcher;
         for (int i = 0; i < passwordLen; i++) {
             passwordChar = password.charAt(i);
             if (passwordChar >= CHAR_LOWER_A && passwordChar <= CHAR_LOWER_Z) {
@@ -232,9 +245,13 @@ public class PasswordComplexityValidator {
                 alphaUpperCharsCount++;
             } else if (passwordChar >= CHAR_NUMERIC_ZERO && passwordChar <= CHAR_NUMERIC_NINE) {
                 numericCharsCount++;
-            } else if (passwordChar >= CHAR_LOWER_SPECIAL_CHAR && passwordChar <= CHAR_UPPER_SPECIAL_CHAR) {
+            } else if (allowExtendedNonAsciiSymbols == false &&
+                    passwordChar >= CHAR_LOWER_SPECIAL_CHAR && passwordChar <= CHAR_UPPER_SPECIAL_CHAR) {
                 specialCharsCount++;
-            } else {
+            } else if (allowExtendedNonAsciiSymbols == true &&
+                    passwordChar >= CHAR_LOWER_SPECIAL_CHAR && passwordChar <= CHAR_EXTENDED_UPPER_SPECIAL_CHAR) {
+                specialCharsCount++;
+            }  else {
                 throw new PasswordComplexityException("Invalid password character entered.  You can use: a-z, A-Z, 0-9, Symbols");
             }
         }
